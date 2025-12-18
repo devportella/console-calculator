@@ -1,1 +1,1 @@
-﻿
+﻿Console.WriteLine("ConsoleCalculator scaffold OK.");
