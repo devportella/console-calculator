@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using ConsoleCalculator.Models;
 
 namespace ConsoleCalculator.Parsing;
@@ -14,9 +15,14 @@ public static class ExpressionParser
         if (!TryFindSingleOperator(input, out char op, out int operatorIndex))
             return false;
 
-        // We have a valid operator in a valid position.
-        // Next step: parse left and right operands around operatorIndex.
-        return false;
+        if (!TryParseLeftOperand(input, operatorIndex, out int left))
+            return false;
+
+        if (!TryParseRightOperand(input, operatorIndex, out int right))
+            return false;
+
+        expression = new Expression(left, op, right);
+        return true;
     }
 
     private static bool TryFindSingleOperator(string input, out char op, out int operatorIndex)
@@ -51,6 +57,52 @@ public static class ExpressionParser
             return false;
 
         return true;
+    }
+
+    private static bool TryParseLeftOperand(string input, int operatorIndex, out int left)
+    {
+        left = 0;
+        bool foundDigit = false;
+
+        for (int i = 0; i < operatorIndex; i++)
+        {
+            char c = input[i];
+
+            if (c == ' ')
+                continue;
+
+            if (c < '0' || c > '9')
+                return false;
+
+            int digit = c - '0';
+            left = (left * 10) + digit;
+            foundDigit = true;
+        }
+
+        return foundDigit;
+    }
+
+    private static bool TryParseRightOperand(string input, int operatorIndex, out int right)
+    {
+        right = 0;
+        bool foundDigit = false;
+
+        for (int i = operatorIndex + 1; i < input.Length; i++)
+        {
+            char c = input[i];
+
+            if (c == ' ')
+                continue;
+
+            if (c < '0' || c > '9')
+                return false;
+
+            int digit = c - '0';
+            right = (right * 10) + digit;
+            foundDigit = true;
+        }
+
+        return foundDigit;
     }
 
     private static bool IsOperator(char c) => c is '+' or '-' or '*' or '/';
