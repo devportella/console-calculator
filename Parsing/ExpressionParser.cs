@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using ConsoleCalculator.Models;
 
 namespace ConsoleCalculator.Parsing;
@@ -40,7 +39,6 @@ public static class ExpressionParser
             if (!IsOperator(c))
                 continue;
 
-            // Found an operator; ensure it's the only one.
             if (operatorIndex != -1)
                 return false;
 
@@ -48,11 +46,9 @@ public static class ExpressionParser
             op = c;
         }
 
-        // Must contain exactly one operator.
         if (operatorIndex == -1)
             return false;
 
-        // Operator cannot be at the beginning or end (ignoring spaces).
         if (IsOnlySpacesOnLeft(input, operatorIndex) || IsOnlySpacesOnRight(input, operatorIndex))
             return false;
 
